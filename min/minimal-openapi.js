@@ -18,8 +18,8 @@ exports.openapiJSON = async ({ options, resolveConfigurationProperty }) => {
     || 'us-east-1'
   const minimal = YAML.parse(file)
   const service = await resolveConfigurationProperty(['service'])
-
-  const lambdaPrefix = `${service}-dev`
+  const stage = await resolveConfigurationProperty(['provider', 'stage']) || 'dev'
+  const lambdaPrefix = `${service}-${stage}`
 
   eachKvo(minimal.paths, (path, v, o) => {
     eachKvo(v, (method, v, o) => {
