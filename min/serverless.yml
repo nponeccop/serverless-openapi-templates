@@ -1,18 +1,19 @@
 service: min
 frameworkVersion: '2'
+variablesResolutionMode: 20210326
+unresolvedVariablesNotificationMode: error
+configValidationMode: error
 provider:
   name: aws
   runtime: nodejs12.x
   lambdaHashingVersion: 20201221
-functions:
-  hello:
-    handler: handler.hello
+functions: ${file(minimal-openapi.js):functions}
 resources:
   Resources:
     HttpApi:
       Type: AWS::ApiGatewayV2::Api
       Properties:
-        Body: ${file(openapi.yml)}
+        Body: ${file(minimal-openapi.js):openapiJSON}
     HttpApiStage:
       Type: AWS::ApiGatewayV2::Stage
       Properties:
