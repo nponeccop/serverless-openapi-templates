@@ -3,7 +3,7 @@
 - `serverless create --template=aws-nodejs` - smallest of the templates
 - `sed -i '/^#/d;/^$/d' serverless.yml` - delete comments
 - `serverless deploy` - deploy hello: min-dev-hello and nothing else
-- `jq '.Resources|map_values(.Type)' .serverless/cloudformation-template-*` 
+- `jq '.Resources|map_values(.Type)' .serverless/cloudformation-template-*`
 ```json
 {
   "ServerlessDeploymentBucket": "AWS::S3::Bucket",
@@ -41,7 +41,7 @@
     only one stage. Deploying multiple stages in the same AWS account is almost useless,
     as e.g. DynamoDB doesn't have stages. And any project has multiple accounts, it's
     normal to have many if security is of any concern, as accounts are really
-    the recommended security boundaries for PCI DSS/HIPAA/whatever. So I guess it's 
+    the recommended security boundaries for PCI DSS/HIPAA/whatever. So I guess it's
     better to use `$default` in Serverless templates as it's a saner default, but I digress
   - `/min-dev-hello` in paths is a URI, you can change it independently from
     the lambda name
@@ -52,3 +52,23 @@
 
   Ok, so this is a very basic manual OpenAPI-based setup. The next step is to plug it into `serverless.yml` so it creates an OpenAPI-based ApiGatewayV2 by importing `openapi.yml` during deployment.
 
+# Import openapi.yml using serverless.yml
+
+Now we create the HttpApi resource manually in the `resources` section:
+
+```yaml
+resources:
+  Resources:
+    HttpApi:
+      Type: AWS::ApiGatewayV2::Api
+      Properties:
+        Body: ${file(openapi.yml)}
+```
+
+Note that some of the properties Serverless normally puts to the ApiGatewayV2 are not allowed,
+beause they are taken from the OpenAPI spec instead. Serverless converts the `.yml` file into JSON
+while plugging it into the CloudFormation templates, and it works just fine.
+
+To deploy, you need to clean up first:
+- `serverless remove`
+- manually remove the gateway in the AWS Console

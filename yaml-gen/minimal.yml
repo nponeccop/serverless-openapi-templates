@@ -1,0 +1,10 @@
+openapi: "3.0.1"
+info:
+  title: "Serverless Minimal OpenAPI"
+paths:
+  /min-dev-hello:
+    post:
+      x-serverless.com:
+        handler: handler.hello
+        function: hello
+
