@@ -1,0 +1,17 @@
+{
+  "name": "validation",
+  "version": "1.0.0",
+  "description": "",
+  "main": "handler.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@apidevtools/json-schema-ref-parser": "^9.0.7",
+    "ajv": "^8.0.5",
+    "serverless-offline": "^6.9.0",
+    "yamljs": "^0.3.0"
+  }
+}

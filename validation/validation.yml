@@ -1,0 +1,20 @@
+openapi: 3.0.3
+info:
+  version: 1.0.0
+  title: Validation
+paths:
+  /hello:
+    post:
+      operationId: helloPost
+      responses:
+        default:
+          description: Any response
+      requestBody:
+          content:
+            application/json:
+              schema:
+                $id: https://example.com/object.json
+                type: object
+                properties:
+                    code:
+                        type: integer
