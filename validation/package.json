@@ -4,6 +4,7 @@
   "description": "",
   "main": "handler.js",
   "scripts": {
+    "build": "node ./openapi-schemas.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -11,7 +12,6 @@
   "devDependencies": {
     "@apidevtools/json-schema-ref-parser": "^9.0.7",
     "ajv": "^8.0.5",
-    "serverless-offline": "^6.9.0",
     "yamljs": "^0.3.0"
   }
 }

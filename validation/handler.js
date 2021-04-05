@@ -4,7 +4,21 @@ const validateHelloPost = require('./schema/helloPost')
 module.exports.hello = async (event) => {
 
   event.body = JSON.parse(event.body)
-  console.log(validateHelloPost(event.body))
+
+  if (!validateHelloPost(event.body)) {
+    console.log(validateHelloPost.errors)
+    return {
+      statusCode: 400,
+      body: JSON.stringify(
+        {
+          message: 'OpenAPI requestBody validation error',
+          ajvError: validateHelloPost.errors
+        },
+        null,
+        2
+      ),
+    }
+  }
 
   return {
     statusCode: 200,

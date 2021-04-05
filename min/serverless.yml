@@ -3,6 +3,8 @@ frameworkVersion: '2'
 variablesResolutionMode: 20210326
 unresolvedVariablesNotificationMode: error
 configValidationMode: error
+plugins:
+  - serverless-offline
 provider:
   name: aws
   runtime: nodejs12.x

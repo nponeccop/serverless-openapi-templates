@@ -18,3 +18,6 @@ paths:
                 properties:
                     code:
                         type: integer
+                additionalProperties: false
+                required:
+                  - code
