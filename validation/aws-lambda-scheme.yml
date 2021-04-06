@@ -5,10 +5,10 @@ properties:
   headers:
     type: object
     properties:
-      Content-type:
+      content-type:
         const: application/json
     required:
-      - Content-type
+      - content-type
   httpMethod:
     const: POST
   isBase64Encoded:
