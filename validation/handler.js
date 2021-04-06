@@ -8,8 +8,7 @@ const jsonResponse = ({statusCode, body}) => {
   }
 }
 
-module.exports.hello = async (event) => {
-
+const jsonWrap = (validator, handler) => async (event) => {
   try {
     event.body = JSON.parse(event.body)
   }
@@ -23,23 +22,28 @@ module.exports.hello = async (event) => {
     })
   }
 
-  if (!validateHelloPost(event.body)) {
-    console.log(validateHelloPost.errors)
+  validator.errors = null
+  if (!validator(event.body)) {
+    console.log(validator.errors)
     return jsonResponse({
       statusCode: 400,
       body:
         { message: 'OpenAPI requestBody validation error'
-        , ajvError: validateHelloPost.errors
+        , ajvError: validator.errors
         }
       })
   }
+  return jsonResponse(await handler(event))
+}
 
-  return jsonResponse({
+module.exports.hello = jsonWrap(validateHelloPost, async (event) => {
+
+  return {
     statusCode: 200,
     body:
       {
         message: 'Go Serverless! Your function executed successfully!',
         input: event,
       }
-    })
-}
+    }
+})
