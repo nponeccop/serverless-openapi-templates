@@ -23,13 +23,12 @@ const jsonWrap = (validator, handler) => async (event) => {
   }
 
   validator.errors = null
-  if (!validator(event.body)) {
-    console.log(validator.errors)
+  if (!validator(event)) {
     return jsonResponse({
       statusCode: 400,
       body:
         { message: 'OpenAPI requestBody validation error'
-        , ajvError: validator.errors
+        , details: validator.errors
         }
       })
   }

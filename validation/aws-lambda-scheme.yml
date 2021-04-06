@@ -1,0 +1,15 @@
+type: object
+properties:
+  body:
+    type: string
+  headers:
+    type: object
+    properties:
+      Content-type:
+        const: application/json
+    required:
+      - Content-type
+  httpMethod:
+    const: POST
+  isBase64Encoded:
+    const: false

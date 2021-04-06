@@ -10,12 +10,14 @@ const standaloneCode = require("ajv/dist/standalone")
 const fileName = 'validation.yml'
 
 const file = fs.readFileSync(fileName, 'utf8')
+const awsScheme = fs.readFileSync('aws-lambda-scheme.yml', 'utf8')
 
 const eachKv = (o, f) => {
   for (let a of Object.keys(o)) f(a, o[a])
 }
 
 const minimal = YAML.parse(file)
+const lambda = YAML.parse(awsScheme)
 
 const traceFreshCopy = (minimal, f) => {
   eachKv(minimal.paths, (path, v) => {
@@ -33,12 +35,13 @@ const main = async () => {
     //  const ff = vv['function']
     const schema = v.requestBody.content['application/json'].schema
 
-    const validate = ajv.compile(schema)
+    lambda.properties.body = schema
+
+    const validate = ajv.compile(lambda)
     const moduleCode = standaloneCode.default(ajv, validate)
-    console.log({moduleCode})
     const operationId = v.operationId
-    console.log({v})
     fs.writeFileSync(`schema/${operationId}.js`, moduleCode) 
+    console.log('Done')
   })
 }
 

@@ -13,7 +13,6 @@ paths:
           content:
             application/json:
               schema:
-                $id: https://example.com/object.json
                 type: object
                 properties:
                     code:
