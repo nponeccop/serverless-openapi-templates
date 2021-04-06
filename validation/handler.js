@@ -1,34 +1,45 @@
 'use strict';
 const validateHelloPost = require('./schema/helloPost')
 
+const jsonResponse = ({statusCode, body}) => {
+  return {
+    statusCode: 400,
+    body: JSON.stringify( body, null, 2)
+  }
+}
+
 module.exports.hello = async (event) => {
 
-  event.body = JSON.parse(event.body)
+  try {
+    event.body = JSON.parse(event.body)
+  }
+  catch (e) {
+    return jsonResponse({
+      statusCode: 400,
+      body:
+        { message: 'JSON parsing error'
+        , details: e.message
+        }
+    })
+  }
 
   if (!validateHelloPost(event.body)) {
     console.log(validateHelloPost.errors)
-    return {
+    return jsonResponse({
       statusCode: 400,
-      body: JSON.stringify(
-        {
-          message: 'OpenAPI requestBody validation error',
-          ajvError: validateHelloPost.errors
-        },
-        null,
-        2
-      ),
-    }
+      body:
+        { message: 'OpenAPI requestBody validation error'
+        , ajvError: validateHelloPost.errors
+        }
+      })
   }
 
-  return {
+  return jsonResponse({
     statusCode: 200,
-    body: JSON.stringify(
+    body:
       {
-        message: 'Go Serverless v1.0! Your function executed successfully!',
+        message: 'Go Serverless! Your function executed successfully!',
         input: event,
-      },
-      null,
-      2
-    ),
-  }
+      }
+    })
 }
