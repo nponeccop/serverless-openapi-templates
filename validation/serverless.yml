@@ -4,6 +4,14 @@ provider:
   name: aws
   runtime: nodejs12.x
   lambdaHashingVersion: 20201221
+package:
+  patterns:
+    - '!**'
+    - handler.js
+    - node_modules/ajv/dist/runtime/equal.js
+    - node_modules/fast-deep-equal/index.js
+    - schema/helloPost.js
+  excludeDevDependencies: false
 plugins:
   - serverless-offline
 functions:
