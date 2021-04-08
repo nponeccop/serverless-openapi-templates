@@ -1,9 +1,15 @@
+const parse = (contentTypeHeader) => {
+ const idx = contentTypeHeader.indexOf(';')
+ return idx >= 0 ? contentTypeHeader.substring(0, idx) : contentTypeHeader
+}
 
-const httpJsonBodyParserMiddleware = (types = { 'application/json; encoding: utf-8': null }) => {
+const httpJsonBodyParserMiddleware = (types = { 'application/json': null }) => {
 
   const httpJsonBodyParserMiddlewareBefore = async (request) => {
     const contentTypeHeader = request.event.headers['content-type']
-    if (contentTypeHeader in types) {
+    const contentType = parse(contentTypeHeader)
+    console.log({ contentType })
+    if (contentType in types) {
         try {
           const data = request.event.isBase64Encoded
             ? Buffer.from(request.event.body, 'base64').toString()
