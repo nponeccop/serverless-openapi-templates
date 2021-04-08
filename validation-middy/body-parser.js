@@ -1,7 +1,6 @@
-const parse = (contentTypeHeader) => {
- const idx = contentTypeHeader.indexOf(';')
- return idx >= 0 ? contentTypeHeader.substring(0, idx) : contentTypeHeader
-}
+const headerParser = require('content-type')
+
+const parse = a => headerParser.parse(a).type
 
 const httpJsonBodyParserMiddleware = (types = { 'application/json': null }) => {
 
