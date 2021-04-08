@@ -1,0 +1,18 @@
+type: object
+properties:
+  body:
+    type: string
+  headers:
+    type: object
+    properties:
+      content-type:
+        type: string
+    required:
+      - content-type
+  httpMethod:
+    const: POST
+  isBase64Encoded:
+    const: false
+required:
+  - body
+  - headers

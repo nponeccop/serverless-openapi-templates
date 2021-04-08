@@ -1,0 +1,25 @@
+{
+  "name": "validation",
+  "version": "1.0.0",
+  "description": "",
+  "main": "handler.js",
+  "scripts": {
+    "build": "node ./openapi-schemas.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@apidevtools/json-schema-ref-parser": "^9.0.7",
+    "ajv": "^8.0.5",
+    "yamljs": "^0.3.0"
+  },
+  "dependencies": {
+    "@middy/core": "^2.0.0",
+    "@middy/http-error-handler": "^2.0.0",
+    "@middy/http-header-normalizer": "^2.0.0",
+    "@middy/http-json-body-parser": "^2.0.0",
+    "@middy/http-response-serializer": "^2.0.0",
+    "@middy/validator": "^2.0.0"
+  }
+}
