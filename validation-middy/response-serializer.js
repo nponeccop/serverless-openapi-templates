@@ -9,7 +9,7 @@ const httpResponseSerializerMiddleware = (opts = {}) => {
     // normalise headers for internal use only
     const requestHeaders = request.event.headers // getNormalisedHeaders(request.event?.headers ?? {})
     // request.response = normalizeHttpResponse(request.response)
-    //const responseHeaders = request.response.headers // getNormalisedHeaders(request.response.headers)
+    // const responseHeaders = request.response.headers // getNormalisedHeaders(request.response.headers)
 
     // skip serialization when content-type is already set
     // if (responseHeaders['content-type']) {
@@ -24,8 +24,8 @@ const httpResponseSerializerMiddleware = (opts = {}) => {
       types = [].concat(requestEvent.requiredContentType)
     } else {
       types = [].concat(
-        
-          [],
+
+        [],
         requestEvent.preferredContentType || [],
         options.default || []
       )
@@ -45,14 +45,12 @@ const httpResponseSerializerMiddleware = (opts = {}) => {
           return false
         }
 
-
         // set header
         //
         // if (!request.response) {
         //  request.response = {}
         // }
         // request.response.headers['Content-Type'] = type
-
 
         // run serializer
 
@@ -85,4 +83,3 @@ const getNormalisedHeaders = (source) =>
   }, {})
 
 module.exports = httpResponseSerializerMiddleware
-

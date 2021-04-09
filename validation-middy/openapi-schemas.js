@@ -1,11 +1,10 @@
-const $RefParser = require("@apidevtools/json-schema-ref-parser")
+const $RefParser = require('@apidevtools/json-schema-ref-parser')
 const YAML = require('yamljs')
 const Ajv = require('ajv')
 const fs = require('fs')
 
-
-const ajv = new Ajv({code: {source: true}}) // this option is required to generate standalone code
-const standaloneCode = require("ajv/dist/standalone")
+const ajv = new Ajv({ code: { source: true } }) // this option is required to generate standalone code
+const standaloneCode = require('ajv/dist/standalone')
 
 const fileName = 'validation.yml'
 
@@ -13,7 +12,7 @@ const file = fs.readFileSync(fileName, 'utf8')
 const awsScheme = fs.readFileSync('aws-lambda-scheme.yml', 'utf8')
 
 const eachKv = (o, f) => {
-  for (let a of Object.keys(o)) f(a, o[a])
+  for (const a of Object.keys(o)) f(a, o[a])
 }
 
 const minimal = YAML.parse(file)
@@ -40,7 +39,7 @@ const main = async () => {
     const validate = ajv.compile(lambda)
     const moduleCode = standaloneCode.default(ajv, validate)
     const operationId = v.operationId
-    fs.writeFileSync(`schema/${operationId}.js`, moduleCode) 
+    fs.writeFileSync(`schema/${operationId}.js`, moduleCode)
     console.log('Done')
   })
 }
