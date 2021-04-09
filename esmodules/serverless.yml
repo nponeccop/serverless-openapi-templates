@@ -1,0 +1,24 @@
+service: validation-esm
+frameworkVersion: '2'
+configValidationMode: error
+provider:
+  name: aws
+  runtime: nodejs14.x
+  lambdaHashingVersion: 20201221
+  memorySize: 128
+package:
+  patterns:
+    - '!**'
+    - wrapesm.js
+    - esm/package.json
+    - esm/**/*.js
+  excludeDevDependencies: false
+plugins:
+  - serverless-offline
+functions:
+  hello:
+    handler: wrapesm.hello
+    events:
+      - httpApi:
+          method: POST
+          path: /hello
