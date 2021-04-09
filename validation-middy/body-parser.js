@@ -7,7 +7,6 @@ const httpJsonBodyParserMiddleware = (types = { 'application/json': null }) => {
   const httpJsonBodyParserMiddlewareBefore = async (request) => {
     const contentTypeHeader = request.event.headers['content-type']
     const contentType = parse(contentTypeHeader)
-    console.log({ contentType })
     if (contentType in types) {
         try {
           const data = request.event.isBase64Encoded
@@ -15,9 +14,8 @@ const httpJsonBodyParserMiddleware = (types = { 'application/json': null }) => {
             : request.event.body
           request.event.body = JSON.parse(data)
         } catch (err) {
-          throw new Error(
-            'Content type defined as JSON but an invalid JSON was provided'
-          )
+            const createError = require('http-errors')
+            throw new createError.UnprocessableEntity('Content type defined as JSON but an invalid JSON was provided');
         }
     }
     else
