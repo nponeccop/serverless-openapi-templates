@@ -1,0 +1,25 @@
+service: esm-ts
+frameworkVersion: '2'
+configValidationMode: error
+provider:
+  name: aws
+  runtime: nodejs14.x
+  lambdaHashingVersion: 20201221
+  memorySize: 128
+  environment:
+    NODE_OPTIONS: "--enable-source-maps"
+package:
+  patterns:
+    - '!**'
+    - wrapesm.js
+    - lib/**
+  excludeDevDependencies: false
+plugins:
+  - serverless-offline
+functions:
+  hello:
+    handler: lib/wrapesm.hello
+    events:
+      - httpApi:
+          method: POST
+          path: /hello
