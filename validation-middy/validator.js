@@ -29,6 +29,7 @@ const validatorMiddleware = (opts = {}) => {
     const valid = outputSchema(request.response)
 
     if (!valid) {
+      const createError = require('http-errors')
       const error = new createError.InternalServerError(
         'Response object failed validation'
       )
