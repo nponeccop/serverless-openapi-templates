@@ -4,7 +4,7 @@ const parse = a => headerParser.parse(a).type
 
 const httpJsonBodyParserMiddleware = (types = { 'application/json': null }) => {
   const httpJsonBodyParserMiddlewareBefore = async (request) => {
-    const contentTypeHeader = request.event.headers['content-type']
+    const contentTypeHeader = request.event.headers['Content-Type']
     const contentType = parse(contentTypeHeader)
     if (contentType in types) {
       try {

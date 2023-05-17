@@ -1,19 +1,24 @@
+// Импорт необходимых модулей
 const fs = require('fs')
-
 const YAML = require('yamljs')
 const assert = require('assert')
 
-const fileName = 'minimal.yml'
+// Определение имени YAML-файла
+const fileName = 'schema/minimal.yml'
 
+// Чтение содержимого YAML-файла
 const file = fs.readFileSync(fileName, 'utf8')
 
+// Функция для обхода каждого ключа-значения объекта
 const eachKv = (o, f) => {
   for (let a of Object.keys(o)) f(a, o[a])
 }
 
-// can't use interpolation because AWS OpenAPI variables use the same syntax
+// Функция для создания URI для функции Lambda
 const makeUri = LambdaFunctionName => 'arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:${AWS::Partition}:lambda:${AWS::Region}:${AWS::AccountId}:function:' + LambdaFunctionName + '/invocations'
+// Возможно строчка выше все ломает(18)
 
+// Функция для обработки свежей копии YAML-файла
 const traceFreshCopy = (f) => {
   const minimal = YAML.parse(file)
   eachKv(minimal.paths, (path, v) => {
@@ -24,13 +29,13 @@ const traceFreshCopy = (f) => {
   return minimal
 }
 
+// Экспорт функции для создания конфигурации OpenAPI JSON
 exports.openapiJSON = async ({ resolveConfigurationProperty }) => {
-  const service = await resolveConfigurationProperty(['service'])
-  const stage = await resolveConfigurationProperty(['provider', 'stage']) || 'dev'
+  const service = "aws-node-project"//await resolveConfigurationProperty(['service'])
+  const stage = "dev"//await resolveConfigurationProperty(['provider', 'stage']) || 'dev'
   const lambdaPrefix = `${service}-${stage}`
-
-  return traceFreshCopy((path, method, v) => {
-    const { "function" : ff } = v['x-serverless.com']
+  const minimal = traceFreshCopy((path, method, v) => {
+    const { "function": ff } = v['x-serverless.com']
     delete v['x-serverless.com']
     v['x-amazon-apigateway-integration'] = {
       "payloadFormatVersion": "2.0",
@@ -40,8 +45,14 @@ exports.openapiJSON = async ({ resolveConfigurationProperty }) => {
       "connectionType": "INTERNET"
     }
   })
+  // fs.writeFile('minimal/minimal.json', JSON.stringify(minimal), (err) => {
+  //   if (err) throw err;
+  //   console.log('Result is saved');
+  // });
+  return minimal
 }
 
+// Экспорт функции для создания конфигурации функций AWS Lambda
 exports.functions = async () => {
   const functions = {}
 

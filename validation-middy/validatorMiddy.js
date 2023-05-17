@@ -1,13 +1,20 @@
 'use strict'
 
 const middy = require('@middy/core')
-const validator = require('./validator')
-const inputSchema = require('./schema/helloPost')
+const validator = require('./validatorMiddleware')
+const inputSchema = require('../schema/validationPost')
 const bodyParser = require('./body-parser')
 const httpErrorHandler = require('@middy/http-error-handler')
 const responseSerializer = require('./response-serializer')
 
-const middyStack = (handler) => middy(handler)
+const baseHandler = async (event) => {
+  return {
+    statusCode: 200,
+    body: { xx: 'aaa' }
+  }
+}
+
+const middyStack = middy(baseHandler)
   .use(bodyParser())
   .use(validator({ inputSchema }))
   .use(httpErrorHandler())
@@ -15,14 +22,15 @@ const middyStack = (handler) => middy(handler)
     serializers: [
       {
         regex: /^application\/json$/,
-        serializer: ({ body }) => JSON.stringify(body)
+        serializer: (body) => {
+          if (body) {
+            return JSON.stringify(body)
+          }
+          return ''
+        }
       }
     ],
     default: 'application/json'
   }))
 
-const baseHandler = async (event) => {
-  return { statusCode: 200, body: JSON.stringify({ xx: 'aaa' }) }
-}
-
-module.exports.hello = middyStack(baseHandler)
+module.exports.handler = middyStack

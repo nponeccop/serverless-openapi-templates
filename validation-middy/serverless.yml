@@ -8,8 +8,8 @@ plugins:
   - serverless-offline
 functions:
   hello:
-    handler: handler.hello
+    handler: validatorMiddy.handler
     events:
       - httpApi:
           method: POST
-          path: /hello
+          path: /validatorMiddy

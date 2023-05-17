@@ -1,85 +1,70 @@
-// const { normalizeHttpResponse } = require('@middy/util')
-// const Accept = require('@hapi/accept')
-
 const defaults = {}
 
 const httpResponseSerializerMiddleware = (opts = {}) => {
   const options = { ...defaults, ...opts }
+
   const httpResponseSerializerMiddlewareAfter = async (request) => {
-    // normalise headers for internal use only
-    const requestHeaders = request.event.headers // getNormalisedHeaders(request.event?.headers ?? {})
-    // request.response = normalizeHttpResponse(request.response)
-    // const responseHeaders = request.response.headers // getNormalisedHeaders(request.response.headers)
+    // нормализуем заголовки для внутреннего использования
+    // request.response = request.response || {}
+    const headers = request.event.headers
 
-    // skip serialization when content-type is already set
-    // if (responseHeaders['content-type']) {
-    //  return
-    // }
+    // определяем типы содержимого, которые требует клиент
+    let preferredTypes
 
-    // find accept value(s)
-    let types
-
-    const requestEvent = request.event
-    if (requestEvent?.requiredContentType) {
-      types = [].concat(requestEvent.requiredContentType)
+    // если requiredContentType передан явно, используем его
+    if (request.event.requiredContentType) {
+      preferredTypes = [].concat(request.event.requiredContentType)
     } else {
-      types = [].concat(
-
+      // в противном случае определяем типы на основе предпочтений клиента
+      // и типов по умолчанию, заданных в опциях
+      preferredTypes = [].concat(
         [],
-        requestEvent.preferredContentType || [],
+        request.event.preferredContentType || [],
         options.default || []
       )
     }
 
-    // dont bother finding a serializer if no types are given
-    if (!types.length) {
+    // если не переданы типы содержимого, то ничего не делаем
+    if (!preferredTypes.length) {
       return
     }
 
-    // find in order of first preferred type that has a matching serializer
-    types.find((type) =>
-      options.serializers.find((s) => {
-        const test = s.regex.test(type)
+    // находим первый подходящий сериализатор для первого подходящего типа
+    preferredTypes.find((preferredType) =>
+      options.serializers.find((serializer) => {
+        // проверяем, подходит ли тип содержимого для текущего сериализатора
+        const matchesType = serializer.regex.test(preferredType)
 
-        if (!test) {
+        // если тип содержимого не соответствует сериализатору, переходим к следующему сериализатору
+        if (!matchesType) {
           return false
         }
 
-        // set header
-        //
-        // if (!request.response) {
-        //  request.response = {}
-        // }
-        // request.response.headers['Content-Type'] = type
+        // задаем тип содержимого в заголовках
+        headers['Content-Type'] = preferredType
+        // сериализуем ответ
+        const serializedBody = serializer.serializer(request.response)
 
-        // run serializer
-
-        const result = s.serializer(request.response)
-
-        if (typeof result === 'object') {
-          // replace response object if result is object
-          request.response = result
+        // если сериализованный ответ - объект, заменяем текущий объект ответа целиком
+        if (typeof serializedBody === 'object') {
+          request.response = serializedBody
         } else {
-          // otherwise only replace the body attribute
-          request.response.body = result
+          // иначе заменяем только тело ответа
+          request.response.body = serializedBody
         }
 
         return true
       })
     )
   }
+
+  // для удобства обработки ошибок используем ту же функцию, что и для after-хука
   const httpResponseSerializerMiddlewareOnError = httpResponseSerializerMiddlewareAfter
+
   return {
     after: httpResponseSerializerMiddlewareAfter,
     onError: httpResponseSerializerMiddlewareOnError
   }
 }
-
-const getNormalisedHeaders = (source) =>
-  Object.keys(source).reduce((destination, key) => {
-    destination[key.toLowerCase()] = source[key]
-
-    return destination
-  }, {})
 
 module.exports = httpResponseSerializerMiddleware
