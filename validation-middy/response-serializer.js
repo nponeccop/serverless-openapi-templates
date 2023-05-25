@@ -5,7 +5,7 @@ const httpResponseSerializerMiddleware = (opts = {}) => {
 
   const httpResponseSerializerMiddlewareAfter = async (request) => {
     // нормализуем заголовки для внутреннего использования
-    // request.response = request.response || {}
+    request.response = request.response || {}
     const headers = request.event.headers
 
     // определяем типы содержимого, которые требует клиент

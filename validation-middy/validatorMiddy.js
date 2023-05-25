@@ -2,7 +2,7 @@
 
 const middy = require('@middy/core')
 const validator = require('./validatorMiddleware')
-const inputSchema = require('../schema/validationPost')
+const inputSchema = require('./schema/validationPost.js')
 const bodyParser = require('./body-parser')
 const httpErrorHandler = require('@middy/http-error-handler')
 const responseSerializer = require('./response-serializer')
