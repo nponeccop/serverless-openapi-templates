@@ -9,17 +9,17 @@ provider:
 package:
   patterns:
     - '!**'
-    - validation.js
+    - handler.js
     - node_modules/ajv/dist/runtime/equal.js
     - node_modules/fast-deep-equal/index.js
-    - schema/validationPost.js
+    - schema/helloPost.js
   excludeDevDependencies: false
 plugins:
   - serverless-offline
 functions:
   hello:
-    handler: validation.handler
+    handler: handler.hello
     events:
       - httpApi:
           method: POST
-          path: /validation
+          path: /hello

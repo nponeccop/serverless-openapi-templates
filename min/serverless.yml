@@ -9,13 +9,13 @@ provider:
   name: aws
   runtime: nodejs12.x
   lambdaHashingVersion: 20201221
-functions: ${file(min.js):functions}
+functions: ${file(minimal-openapi.js):functions}
 resources:
   Resources:
     HttpApi:
       Type: AWS::ApiGatewayV2::Api
       Properties:
-        Body: ${file(min.js):openapiJSON}
+        Body: ${file(minimal-openapi.js):openapiJSON}
     HttpApiStage:
       Type: AWS::ApiGatewayV2::Stage
       Properties:
