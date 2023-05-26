@@ -4,19 +4,19 @@ const httpResponseSerializerMiddleware = (opts = {}) => {
   const options = { ...defaults, ...opts }
 
   const httpResponseSerializerMiddlewareAfter = async (request) => {
-    // нормализуем заголовки для внутреннего использования
+    // Normalize headers for internal use
     request.response = request.response || {}
     const headers = request.event.headers
 
-    // определяем типы содержимого, которые требует клиент
+    // Determine the preferred content types requested by the client
     let preferredTypes
 
-    // если requiredContentType передан явно, используем его
+    // If requiredContentType is explicitly provided, use it
     if (request.event.requiredContentType) {
       preferredTypes = [].concat(request.event.requiredContentType)
     } else {
-      // в противном случае определяем типы на основе предпочтений клиента
-      // и типов по умолчанию, заданных в опциях
+      // Otherwise, determine the types based on client preferences
+      // and default types specified in the options
       preferredTypes = [].concat(
         [],
         request.event.preferredContentType || [],
@@ -24,32 +24,32 @@ const httpResponseSerializerMiddleware = (opts = {}) => {
       )
     }
 
-    // если не переданы типы содержимого, то ничего не делаем
+    // If no content types are provided, do nothing
     if (!preferredTypes.length) {
       return
     }
 
-    // находим первый подходящий сериализатор для первого подходящего типа
+    // Find the first matching serializer for the first matching type
     preferredTypes.find((preferredType) =>
       options.serializers.find((serializer) => {
-        // проверяем, подходит ли тип содержимого для текущего сериализатора
+        // Check if the content type matches the current serializer
         const matchesType = serializer.regex.test(preferredType)
 
-        // если тип содержимого не соответствует сериализатору, переходим к следующему сериализатору
+        // If the content type does not match the serializer, move to the next serializer
         if (!matchesType) {
           return false
         }
 
-        // задаем тип содержимого в заголовках
+        // Set the content type in the headers
         headers['Content-Type'] = preferredType
-        // сериализуем ответ
+        // Serialize the response
         const serializedBody = serializer.serializer(request.response)
 
-        // если сериализованный ответ - объект, заменяем текущий объект ответа целиком
+        // If the serialized response is an object, replace the current response object entirely
         if (typeof serializedBody === 'object') {
           request.response = serializedBody
         } else {
-          // иначе заменяем только тело ответа
+          // Otherwise, only replace the response body
           request.response.body = serializedBody
         }
 
@@ -58,7 +58,7 @@ const httpResponseSerializerMiddleware = (opts = {}) => {
     )
   }
 
-  // для удобства обработки ошибок используем ту же функцию, что и для after-хука
+  // Use the same function for error handling as the after-hook for convenience
   const httpResponseSerializerMiddlewareOnError = httpResponseSerializerMiddlewareAfter
 
   return {
@@ -68,3 +68,4 @@ const httpResponseSerializerMiddleware = (opts = {}) => {
 }
 
 module.exports = httpResponseSerializerMiddleware
+
