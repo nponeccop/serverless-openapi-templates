@@ -7,15 +7,11 @@ const defaults = {
 }
 
 const validatorMiddleware = (opts = {}) => {
-  const {
-    inputSchema,
-    outputSchema
-  } = { ...defaults, ...opts }
-
+  const options = { ...defaults, ...opts }
+  const inputSchema = options.inputSchema
+  const outputSchema = options.outputSchema
   const validatorMiddlewareBefore = async (request) => {
-    // console.log(request.event)
-    const valid = inputSchema(request.event)
-
+    const valid = inputSchema(request.event.body)
     if (!valid) {
       const error = new Error('Event object failed validation')
       request.event.headers = { ...request.event.headers }

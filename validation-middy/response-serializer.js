@@ -7,6 +7,7 @@ const httpResponseSerializerMiddleware = (opts = {}) => {
   const options = { ...defaults, ...opts }
   const httpResponseSerializerMiddlewareAfter = async (request) => {
     // normalise headers for internal use only
+    request.response = request.response || {}
     const requestHeaders = request.event.headers // getNormalisedHeaders(request.event?.headers ?? {})
     // request.response = normalizeHttpResponse(request.response)
     // const responseHeaders = request.response.headers // getNormalisedHeaders(request.response.headers)
