@@ -73,8 +73,7 @@ const httpResponseSerializerMiddleware = (opts = {}) => {
     after: httpResponseSerializerMiddlewareAfter,
     onError: httpResponseSerializerMiddlewareOnError
   }
-}
-
+}//s
 const getNormalisedHeaders = (source) =>
   Object.keys(source).reduce((destination, key) => {
     destination[key.toLowerCase()] = source[key]
