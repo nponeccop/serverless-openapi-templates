@@ -21,6 +21,10 @@
     "@middy/http-header-normalizer": "^2.0.0",
     "@middy/http-json-body-parser": "^2.0.0",
     "@middy/http-response-serializer": "^2.0.0",
-    "@middy/validator": "^2.0.0"
+    "@middy/util": "^4.5.0",
+    "@middy/validator": "^2.0.0",
+    "content-type": "^1.0.5",
+    "serverless-offline": "^12.0.4",
+    "sls": "^0.1.0"
   }
 }
